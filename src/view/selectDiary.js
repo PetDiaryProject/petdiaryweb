@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Paper, Container, Grid } from '@mui/material';
-import { Typography, Input, Button } from 'antd';
+import { Typography, Input, Button , message } from 'antd';
 import 'antd/dist/antd.css';
 import axios from 'axios';
 import { Redirect } from 'react-router';
@@ -36,10 +36,50 @@ class selectDiary extends Component {
         console.log(data)
         axios.put(url, data)
             .then(reponse => {
+                message.success('แก้ไขไดอารี่เสร็จสิ้น', 2)
+                this.setState({ dairy: data })
                 this.changeUpdateTrue()
-                this.setState({dairy:data})
             })
+            
+    }
 
+    fileSelectHandle = (e) => {
+        const reader = new FileReader()
+
+        reader.onloadend = () => {
+
+        }
+
+        this.setState({ selectedFile: e.target.files[0] })
+    }
+
+    uploadFiletoServer = () => {
+        console.log(this.state.selectedFile)
+
+        const formData = new FormData(); 
+     
+        var image = this.state.selectedFile
+        // Update the formData object 
+        formData.append( 
+          "file",  
+          image
+        ); 
+       
+        // Details of the uploaded file 
+        console.log(image); 
+       
+        axios.post("http://localhost:8001/upload", formData);
+    }
+
+    deleteDiary = () => {
+        var url = "https://petdiaryintern.herokuapp.com/api/diary/delete"
+        var data = this.state.diary.Diaryid
+        console.log(data)
+        axios.delete(url +"/"+ data)
+            .then(reponse => {
+                this.goBack()
+            })
+            
     }
 
     render() {
@@ -85,6 +125,17 @@ class selectDiary extends Component {
                         }} onClick={this.changeUpdate}>
                             แก้ไข
                         </Button>
+                        <Button sx={{
+                            height: 50,
+                            bgcolor: 'primary.dark',
+                            '&:hover': {
+                                backgroundColor: 'primary.main',
+                                opacity: [0.9, 0.8, 0.7],
+                            },
+                            color: '#ffffff',
+                        }} onClick={this.deleteDiary}>
+                            ลบ
+                        </Button>
                     </Grid>
                     {
                         this.state.update
@@ -97,7 +148,9 @@ class selectDiary extends Component {
                                 {this.state.diary.Title}
                             </Typography>
                             <p>
-                                {this.state.diary.Detail}
+                                {this.state.diary.Detail,
+                                    this.props.diary.AddDate
+                                }
                             </p>
                         </Paper>
                     }
@@ -113,6 +166,14 @@ class selectDiary extends Component {
                                 รายละเอียด
                             </Typography>
                             <TextArea defaultValue={this.state.diary.Detail} rows={10} allowClear onChange={onChangeDetail}></TextArea>
+                            <Typography>
+                                เพิ่มรูปภาพ
+                            </Typography>
+                            <input
+                                type="file"
+                                onChange={this.fileSelectHandle}
+
+                            />
                             <br></br>
                             <Button onClick={this.changeUpdateTrue} >ยกเลิก</Button>
                             <Button onClick={this.setDiaryValue}>แก้ไขไดอารี่</Button>

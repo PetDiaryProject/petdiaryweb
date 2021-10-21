@@ -27,6 +27,7 @@ class Diary extends Component {
 
     changePage = () => {
         this.setState({ page: false })
+        window.scrollTo(0, 0);
     }
 
     changePageTrue = () => {
@@ -36,6 +37,7 @@ class Diary extends Component {
 
     setRegis = () => {
         this.setState({ regis: true })
+        window.scrollTo(0, 0);
     }
 
     setRegisFalse = () => {
@@ -87,7 +89,8 @@ class Diary extends Component {
             <>
                 <div style={{
                     backgroundColor: '#cfe8fc',
-                    height: "100vh",
+                    height: "100%",
+                    width:"auto",
                     "background-repeat": "no-repeat",
                     "background-attachment": "fixed",
                     "background-size": "100% 100%",
@@ -113,7 +116,7 @@ class Diary extends Component {
                                         >
                                             Create Diary
                                         </Button>
-                                        <Button sx={{
+                                        {/*<Button sx={{
                                             height: 50,
                                             bgcolor: 'primary.dark',
                                             '&:hover': {
@@ -127,6 +130,7 @@ class Diary extends Component {
                                         >
                                             Picture
                                         </Button>
+                                        */}
                                     </Space>
 
                                 </div>
@@ -150,14 +154,29 @@ class Diary extends Component {
                                                 <div
                                                     style={{
                                                         backgroundColor: '#66ffcc',
+                                                        "&:hover": {
+                                                            background: "#ffffff"
+                                                        },
                                                         width: '100%',
                                                         height: '50px',
-                                                        marginBottom: '2'
+                                                        marginBottom: '10px',
+                                                        alignContent:'center',
+                                                        display: 'flex',
+                                                        flexWrap: 'wrap',
+                                                        
                                                     }}
                                                     value={e.Diaryid}
                                                     onClick={() => this.setDiaryValue(k)}
                                                 >
-                                                    <a>{e.Title + e.AddDate}</a>
+                                                    <div>
+                                                        <a>{e.Title}</a>
+                                                    </div>
+                                                    <div style={{
+                                                        justifyContent: 'flex-end',
+                                                    }}>
+                                                        <a>{e.AddDate}</a>
+                                                    </div>
+                                                    
                                                 </div>
 
                                             )
@@ -177,6 +196,7 @@ class Diary extends Component {
                             }
                         </Col>
                     </Row>
+                    <Row></Row>
                 </div>
             </>
         )

@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { Typography, Input, Button, Card, Row, Col, Form, Select, Switch, Space } from 'antd';
+import { Typography, Input, Button, Card, Row, Col, Form, Select, Switch, Space , message} from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 import axios from 'axios';
@@ -10,15 +10,14 @@ class createBoard extends Component {
 
     state = {
         typeData: [],
+        boardid: "",
         board: {
-            Boardid: "",
             Title: "",
             Detail: "",
             Typeid: "",
             IsShow: true,
         },
         comment: {
-            Commentid: "",
             Userid: localStorage.getItem('userid'),
             Boardid: "",
             Text: "",
@@ -44,6 +43,37 @@ class createBoard extends Component {
             })
     }
 
+    buildBoard = () => {
+        var url = "https://petdiaryintern.herokuapp.com/api/board/create"
+        var data = this.state.board
+        axios.post(url, data)
+            .then(response => {
+                var item = response.data
+                url = "https://petdiaryintern.herokuapp.com/api/comment/create"
+                data = this.state.comment
+                data.Boardid = item
+                console.log(data)
+                axios.post(url, data)
+                    .then(response => {
+                        
+                        message.success('สร้างบอร์ดเสร็จสิ้น', 2)
+                        this.goBack()
+                    })
+            })
+    }
+
+    createComment = (e) => {
+        console.log(e)
+        var url = "https://petdiaryintern.herokuapp.com/api/comment/create"
+        var data = this.state.comment
+        data.Boardid = e
+        console.log(data)
+        axios.post(url, data)
+            .then(response => {
+                this.goBack()
+            })
+    }
+
     onChangeType(e) {
         var data = this.state.board
         data.Typeid = e
@@ -57,8 +87,30 @@ class createBoard extends Component {
         this.setState({ board: data })
     }
 
+    onChangeTitle(e) {
+        var data = this.state.board
+        data.Title = e
+        this.setState({ board: data })
+    }
+
+    onChangeDetail(e) {
+        var data = this.state.board
+        data.Detail = e
+        this.setState({ board: data })
+        var data = this.state.comment
+        data.Text = e
+        this.setState({ comment: data })
+
+    }
+
+    onChangeBoardid(e) {
+        var data = this.state.comment
+        data.Boardid = e
+        this.setState({ comment: data })
+    }
+
     render() {
-        console.log(this.state)
+        //console.log(this.state.board)
 
         const { TextArea } = Input;
 
@@ -74,7 +126,9 @@ class createBoard extends Component {
                                     <p><h1>สร้างบอร์ด</h1></p>
                                 </Form.Item>
                                 <Form.Item >
-
+                                    <Typography>
+                                        หมวดหมู่
+                                    </Typography>
                                     <Select onChange={(e) => this.onChangeType(e)}>
                                         {
                                             this.state.typeData.map(data => {
@@ -97,14 +151,13 @@ class createBoard extends Component {
                                     <Typography>
                                         ชื่อบอร์ด
                                     </Typography>
-                                    <Input placeholder="" allowClear />
+                                    <Input placeholder="" allowClear onChange={(e) => this.onChangeTitle(e.target.value)} />
                                 </Form.Item>
                                 <Form.Item>
                                     <Typography>
                                         เนื้อหา
                                     </Typography>
-                                    <TextArea placeholder="" rows={10} allowClear />
-
+                                    <TextArea placeholder="" rows={10} allowClear onChange={(e) => this.onChangeDetail(e.target.value)} />
                                 </Form.Item>
                                 <Form.Item>
                                     <Typography>
@@ -113,7 +166,7 @@ class createBoard extends Component {
                                     <Button icon={<UploadOutlined />}>Click to Upload</Button>
                                 </Form.Item>
                                 <Form.Item>
-                                    <Button >เพิ่มไดอารี่</Button>
+                                    <Button onClick={this.buildBoard}>เพิ่มไดอารี่</Button>
                                     <Button onClick={this.goBack} >ย้อนกลับ</Button>
                                 </Form.Item>
                             </Form>

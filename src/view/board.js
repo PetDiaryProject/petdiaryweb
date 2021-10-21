@@ -31,18 +31,27 @@ class Board extends Component {
 
     changePage = () => {
         this.setState({ page: false })
+        window.scrollTo(0, 0);
+        
     }
 
     handleType = () => {
         this.setState({ page: true })
+        setTimeout(() => {
+            this.getBoard()
+        }, 1000)
     }
 
     setCreate = () => {
         this.setState({ create: true })
+        window.scrollTo(0, 0);
     }
 
     setCreateFalse = () => {
         this.setState({ create: false })
+        setTimeout(() => {
+            this.getBoard()
+        }, 1000)
     }
 
     getType() {
@@ -55,7 +64,7 @@ class Board extends Component {
     }
 
     getBoard() {
-        var url = "https://petdiaryintern.herokuapp.com/api/board"
+        var url = "https://petdiaryintern.herokuapp.com/api/board/show"
         axios.get(url)
             .then(response => {
                 var item = response.data
@@ -198,27 +207,34 @@ class Board extends Component {
                                 &&
                                 !this.state.create
                                 &&
-                                <Grid mt={2}>
+                                <div style={{ marginTop: 10 }}>
                                     {
                                         this.state.boardData.map(e => {
                                             let k = e.Boardid
+                                            console.log(e.Comments)
                                             return (
-                                                < Grid item >
-                                                    <Button sx={{
+                                                <div
+                                                    style={{
+                                                        backgroundColor: '#66ffcc',
                                                         width: '100%',
-                                                        bgcolor: '#66ffcc',
-                                                        justifyContent: 'flex-start'
+                                                        height: '50px',
+                                                        marginBottom: '10px',
+                                                        alignContent: 'center',
+                                                        display: 'flex',
+                                                        flexWrap: 'wrap',
                                                     }}
-                                                        value={k}
-                                                        onClick={() => this.setBoardValue(k)}
-                                                    >
-                                                        <p>{e.Title + e.Comments[0].AddDate}</p>
-                                                    </Button>
-                                                </Grid>
+
+                                                    value={k}
+                                                    onClick={() => this.setBoardValue(k)}
+                                                >
+                                                    <div>
+                                                        <a>{e.Title /*+ e.Comments[0].AddDate*/}</a>
+                                                    </div>
+                                                </div>
                                             )
                                         })
                                     }
-                                </Grid>
+                                </div>
                             }
 
                             {

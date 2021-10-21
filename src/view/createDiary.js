@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { Typography, Input, Button, Card, Row, Col, Form } from 'antd';
+import { Typography, Input, Button, Card, Row, Col, Form , message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 import axios from 'axios';
@@ -8,6 +8,7 @@ import axios from 'axios';
 class createDiary extends Component {
 
     state = {
+        selectedFile: null,
         diary: {
             Title: "",
             Detail: "",
@@ -16,14 +17,17 @@ class createDiary extends Component {
     }
 
     setDiaryValue = () => {
-        var url = "https://petdiaryintern.herokuapp.com/api/diary/create"
+        var url = "http://petdiaryintern.herokuapp.com/api/diary/create"
         var data = this.state.diary
+        var a = null
         console.log(data)
         axios.post(url, data)
-            .then(reponse => {
-                console.log(reponse)
+            .then(response => {
+                a = response
+                this.uploadFiletoServer(a)
             })
             .then(e => {
+                message.success('สร้างไดอารี่เสร็จสิ้น', 2)
                 this.goBack()
             })
     }
@@ -32,8 +36,38 @@ class createDiary extends Component {
         this.props.currentType()
     }
 
+    fileSelectHandle = (e) => {
+        const reader = new FileReader()
+
+        reader.onloadend = () => {
+
+        }
+
+        this.setState({ selectedFile: e.target.files[0] })
+    }
+
+    uploadFiletoServer = (e) => {
+        console.log(e.data.Diaryid)
+
+        const formData = new FormData(); 
+     
+        var image = this.state.selectedFile
+        // Update the formData object 
+        formData.append( 
+          "file",  
+          image ,
+          e.data.Diaryid
+        ); 
+
+       
+        axios.post("http://localhost:8001/upload/diary", formData)
+        .then(response => {
+            console.log(response)
+        });
+    }
+
     render() {
-        console.log(this.state)
+
 
         const { TextArea } = Input;
 
@@ -75,7 +109,11 @@ class createDiary extends Component {
                                     <Typography>
                                         เพิ่มรูปภาพ
                                     </Typography>
-                                    <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                                    <input
+                                        type="file"
+                                        onChange={this.fileSelectHandle}
+                                       
+                                    />
                                 </Form.Item>
                                 <Form.Item>
                                     <Button onClick={this.setDiaryValue} >เพิ่มไดอารี่</Button>

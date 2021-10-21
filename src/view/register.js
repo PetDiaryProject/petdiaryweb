@@ -47,7 +47,12 @@ class Register extends Component {
                 console.log(response)
                 message.success('สมัครเสร็จสิ้น เข้าสู่ระบบเพื่อเริ่มต้นใช้งาน', 2)
                 .then( () => {
-                    this.setState({regis:true})
+                    axios.post("http://localhost:8001/register" , response.data)
+                        .then(response => {
+                            console.log(response)
+                            this.setState({regis:true})
+                        })
+        
                 })
             })
             .catch(() => {
