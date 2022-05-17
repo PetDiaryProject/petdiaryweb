@@ -51,8 +51,8 @@ class Register extends Component {
                         .then(response => {
                             console.log(response)
                             this.setState({regis:true})
+                            setTimeout("",1000)
                         })
-        
                 })
             })
             .catch(() => {
@@ -173,7 +173,7 @@ class Register extends Component {
                                     ?
                                     <Button onClick={this.Register}>สมัครสมาชิก</Button>
                                     : <Tooltip placement="top" title="ต้องกรอกข้อมูลให้ครบก่อนจึงจะสมัครได้">
-                                        <Button disabled onClick={this.Register}>สมัครสมาชิก</Button>
+                                        <Button disabled onClick={this.Register} >สมัครสมาชิก</Button>
                                     </Tooltip>
                                 }
                                 <Button style={{ marginLeft: 4 }} href='/login'>ย้อนกลับ</Button>

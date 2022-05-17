@@ -1,10 +1,12 @@
 
 import React, { Component } from 'react';
-import { Typography, Input, Button, Card, Row, Col, Form, Select, Switch, Space , message} from 'antd';
+import { Typography, Input,  Card, Row, Col, Form, Select, Switch, Space , message} from 'antd';
+import { Button } from '@mui/material';
 import { UploadOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 import axios from 'axios';
-
+import AddIcon from '@mui/icons-material/Add';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 class createBoard extends Component {
 
@@ -160,14 +162,44 @@ class createBoard extends Component {
                                     <TextArea placeholder="" rows={10} allowClear onChange={(e) => this.onChangeDetail(e.target.value)} />
                                 </Form.Item>
                                 <Form.Item>
-                                    <Typography>
+                                    {/* <Typography>
                                         เพิ่มรูปภาพ
                                     </Typography>
-                                    <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                                    <Button icon={<UploadOutlined />}>Click to Upload</Button> */}
                                 </Form.Item>
                                 <Form.Item>
-                                    <Button onClick={this.buildBoard}>เพิ่มไดอารี่</Button>
-                                    <Button onClick={this.goBack} >ย้อนกลับ</Button>
+                                    <Button sx={{
+                                        marginTop: 1,
+                                        height: 50,
+                                        marginRight: 1,
+                                        bgcolor: 'primary.dark',
+                                        '&:hover': {
+                                        backgroundColor: 'primary.main',
+                                        opacity: [0.9, 0.8, 0.7],
+                                        },
+                                        color: '#ffffff',
+                                        }}
+                                        startIcon={<AddIcon />}
+                                        onClick={this.buildBoard}
+                                        >
+                                        เพิ่มบอร์ด
+                                    </Button>
+                                    <Button sx={{
+                                        marginTop: 1,
+                                        height: 50,
+                                        bgcolor: 'primary.dark',
+                                        '&:hover': {
+                                        backgroundColor: 'primary.main',
+                                        opacity: [0.9, 0.8, 0.7],
+                                        },
+                                        color: '#ffffff',
+                                        }}
+                                        startIcon={<ArrowBackIosIcon />}
+                                        onClick={this.goBack}
+                                    >
+                                        ย้อนกลับ
+                                    </Button>
+                                    
                                 </Form.Item>
                             </Form>
 

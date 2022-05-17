@@ -1,9 +1,18 @@
 import React, { Component } from 'react';
-import { Paper, Container, Grid } from '@mui/material';
-import { Typography, Input, Button , message } from 'antd';
+import { Paper, Container, Grid, Button } from '@mui/material';
+import { Typography, Input, message } from 'antd';
 import 'antd/dist/antd.css';
 import axios from 'axios';
 import { Redirect } from 'react-router';
+import Icon from '@mui/material/Icon';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Divider from '@mui/material/Divider';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 
 class selectDiary extends Component {
 
@@ -38,9 +47,10 @@ class selectDiary extends Component {
             .then(reponse => {
                 message.success('แก้ไขไดอารี่เสร็จสิ้น', 2)
                 this.setState({ dairy: data })
-                this.changeUpdateTrue()
+                setTimeout(this.changeUpdateTrue(), 1000)
+
             })
-            
+
     }
 
     fileSelectHandle = (e) => {
@@ -56,18 +66,18 @@ class selectDiary extends Component {
     uploadFiletoServer = () => {
         console.log(this.state.selectedFile)
 
-        const formData = new FormData(); 
-     
+        const formData = new FormData();
+
         var image = this.state.selectedFile
         // Update the formData object 
-        formData.append( 
-          "file",  
-          image
-        ); 
-       
+        formData.append(
+            "file",
+            image
+        );
+
         // Details of the uploaded file 
-        console.log(image); 
-       
+        console.log(image);
+
         axios.post("http://localhost:8001/upload", formData);
     }
 
@@ -75,16 +85,16 @@ class selectDiary extends Component {
         var url = "https://petdiaryintern.herokuapp.com/api/diary/delete"
         var data = this.state.diary.Diaryid
         console.log(data)
-        axios.delete(url +"/"+ data)
+        axios.delete(url + "/" + data)
             .then(reponse => {
                 this.goBack()
             })
-            
+
     }
 
     render() {
-
-        console.log(this.state)
+        console.log(this.props.diary)
+        //console.log(this.state)
         const { TextArea } = Input;
 
         const onChangeTitle = e => {
@@ -105,54 +115,71 @@ class selectDiary extends Component {
                     <Grid Container>
                         <Button sx={{
                             height: 50,
+                            marginBottom: 1,
                             bgcolor: 'primary.dark',
                             '&:hover': {
                                 backgroundColor: 'primary.main',
                                 opacity: [0.9, 0.8, 0.7],
                             },
                             color: '#ffffff',
-                        }} onClick={this.goBack}>
+                        }}
+                            startIcon={<ArrowBackIosIcon />}
+                            onClick={this.goBack}>
                             ย้อนกลับ
                         </Button>
                         <Button sx={{
                             height: 50,
+                            marginLeft: 1,
+                            marginRight: 1,
+                            marginBottom: 1,
                             bgcolor: 'primary.dark',
                             '&:hover': {
                                 backgroundColor: 'primary.main',
                                 opacity: [0.9, 0.8, 0.7],
                             },
                             color: '#ffffff',
-                        }} onClick={this.changeUpdate}>
+                        }}
+                            startIcon={<BorderColorIcon />}
+                            onClick={this.changeUpdate}>
                             แก้ไข
                         </Button>
                         <Button sx={{
                             height: 50,
+                            marginBottom: 1,
                             bgcolor: 'primary.dark',
                             '&:hover': {
                                 backgroundColor: 'primary.main',
                                 opacity: [0.9, 0.8, 0.7],
                             },
                             color: '#ffffff',
-                        }} onClick={this.deleteDiary}>
+                        }}
+                            startIcon={<DeleteIcon />}
+                            onClick={this.deleteDiary}>
                             ลบ
                         </Button>
                     </Grid>
                     {
                         this.state.update
                         &&
-                        <Paper sx={{
-                            width: "100%",
-                        }}
+                        <Card sx={{ Width: "50%" }}
                         >
-                            <Typography>
-                                {this.state.diary.Title}
-                            </Typography>
-                            <p>
-                                {this.state.diary.Detail,
-                                    this.props.diary.AddDate
-                                }
-                            </p>
-                        </Paper>
+                            <CardContent>
+
+                                <Typography >
+                                    ชื่อไดอารี่ : {this.state.diary.Title}
+                                </Typography>
+                                <Divider />
+
+                                <p>
+                                    เนื้อหาไดอารี่ : {this.state.diary.Detail}
+                                </p>
+                                <Divider />
+                                <p>
+                                    วันที่เขียนไดอารี่ : {this.props.diary.AddDate}
+
+                                </p>
+                            </CardContent>
+                        </Card>
                     }
                     {
                         !this.state.update
@@ -166,17 +193,39 @@ class selectDiary extends Component {
                                 รายละเอียด
                             </Typography>
                             <TextArea defaultValue={this.state.diary.Detail} rows={10} allowClear onChange={onChangeDetail}></TextArea>
-                            <Typography>
-                                เพิ่มรูปภาพ
-                            </Typography>
-                            <input
-                                type="file"
-                                onChange={this.fileSelectHandle}
 
-                            />
                             <br></br>
-                            <Button onClick={this.changeUpdateTrue} >ยกเลิก</Button>
-                            <Button onClick={this.setDiaryValue}>แก้ไขไดอารี่</Button>
+                            <Button sx={{
+                                height: 50,
+                                marginTop: 1,
+                                marginRight: 1,
+                                bgcolor: 'primary.dark',
+                                '&:hover': {
+                                    backgroundColor: 'primary.main',
+                                    opacity: [0.9, 0.8, 0.7],
+                                },
+                                color: '#ffffff',
+                            }}
+                                startIcon={<CheckIcon />}
+                                onClick={this.setDiaryValue}>
+                                แก้ไขไดอารี่
+                            </Button>
+                            <Button sx={{
+                                height: 50,
+                                marginTop: 1,
+                                bgcolor: 'primary.dark',
+                                '&:hover': {
+                                    backgroundColor: 'primary.main',
+                                    opacity: [0.9, 0.8, 0.7],
+                                },
+                                color: '#ffffff',
+                            }}
+                                startIcon={<CloseIcon />}
+                                onClick={this.changeUpdateTrue}>
+                                ยกเลิก
+                            </Button>
+
+
                         </div>
                     }
                 </Container>

@@ -4,8 +4,13 @@ import { Container, Grid, Button } from "@mui/material";
 import axios from 'axios';
 import SeletetDiary from './selectDiary.js';
 import CreateDiary from './createDiary.js';
-import { Space, Card, Row, Col } from 'antd';
+import { Space, Card, Row, Col, Typography } from 'antd';
 import 'antd/dist/antd.css';
+import Icon from '@mui/material/Icon';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import AddIcon from '@mui/icons-material/Add';
+import { green } from '@mui/material/colors';
+import Divider from '@mui/material/Divider';
 
 class Diary extends Component {
 
@@ -79,6 +84,7 @@ class Diary extends Component {
             })
     }
 
+    
 
 
 
@@ -88,10 +94,13 @@ class Diary extends Component {
         return (
             <>
                 <div style={{
-                    backgroundColor: '#cfe8fc',
-                    height: "100%",
-                    width:"auto",
-                    "background-repeat": "no-repeat",
+                    //backgroundColor: "pink",
+                    //backgroundImage:`url(/image/system/Glass.png)`,
+                    backgroundImage:`url(/image/system/Wood.png)`,
+                    opacity: "75%",
+                    height: "100vh",
+                    width:"100%",
+                    "background-repeat": "repeat",
                     "background-attachment": "fixed",
                     "background-size": "100% 100%",
                 }}>
@@ -105,6 +114,7 @@ class Diary extends Component {
                                     <Space>
                                         <Button sx={{
                                             height: 50,
+                                            
                                             bgcolor: 'primary.dark',
                                             '&:hover': {
                                                 backgroundColor: 'primary.main',
@@ -112,9 +122,10 @@ class Diary extends Component {
                                             },
                                             color: '#ffffff',
                                         }}
+                                        startIcon={<AddCircleIcon />}
                                             onClick={this.setRegis}
                                         >
-                                            Create Diary
+                                               Create Diary
                                         </Button>
                                         {/*<Button sx={{
                                             height: 50,
@@ -152,29 +163,32 @@ class Diary extends Component {
                                             return (
 
                                                 <div
-                                                    style={{
-                                                        backgroundColor: '#66ffcc',
-                                                        "&:hover": {
-                                                            background: "#ffffff"
-                                                        },
-                                                        width: '100%',
-                                                        height: '50px',
-                                                        marginBottom: '10px',
-                                                        alignContent:'center',
-                                                        display: 'flex',
-                                                        flexWrap: 'wrap',
-                                                        
-                                                    }}
+                                                    
                                                     value={e.Diaryid}
                                                     onClick={() => this.setDiaryValue(k)}
                                                 >
                                                     <div>
-                                                        <a>{e.Title}</a>
-                                                    </div>
-                                                    <div style={{
-                                                        justifyContent: 'flex-end',
-                                                    }}>
-                                                        <a>{e.AddDate}</a>
+                                                    <a>
+                                                    <Button sx={{
+                                                        height: "100%",
+                                                        width: "100%",
+                                                        backgroundColor: "gray",
+                                                        backgroundImage:`url(/image/system/Book.png)`,
+                                                        "background-repeat": "repeat",
+                                                        //"background-attachment": "fixed",
+                                                        "background-size": "100% 100%",
+                                                        '&:hover': {
+                                                        backgroundColor: 'primary.main',
+                                                        opacity: "100",
+                                                        },
+                                                        marginBottom: 1,
+                                                        color: "black",
+                                                    }}variant="outlined" href="#outlined-buttons">
+                                                        
+                                                     {e.Title +" "+ e.AddDate}
+                                                     
+                                                    </Button>
+                                                    </a>
                                                     </div>
                                                     
                                                 </div>

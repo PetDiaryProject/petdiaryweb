@@ -1,10 +1,12 @@
 
 import React, { Component } from 'react';
-import { Typography, Input, Button, Card, Row, Col, Form , message } from 'antd';
+import { Typography, Input,  Card, Row, Col, Form , message } from 'antd';
+import {  Button} from '@mui/material';
 import { UploadOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 import axios from 'axios';
-
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 class createDiary extends Component {
 
     state = {
@@ -24,7 +26,7 @@ class createDiary extends Component {
         axios.post(url, data)
             .then(response => {
                 a = response
-                this.uploadFiletoServer(a)
+                
             })
             .then(e => {
                 message.success('สร้างไดอารี่เสร็จสิ้น', 2)
@@ -105,7 +107,7 @@ class createDiary extends Component {
                                     <TextArea placeholder="" rows={10} allowClear onChange={onChangeDetail} />
 
                                 </Form.Item>
-                                <Form.Item>
+                                {/* <Form.Item>
                                     <Typography>
                                         เพิ่มรูปภาพ
                                     </Typography>
@@ -114,10 +116,38 @@ class createDiary extends Component {
                                         onChange={this.fileSelectHandle}
                                        
                                     />
-                                </Form.Item>
+                                </Form.Item> */}
                                 <Form.Item>
-                                    <Button onClick={this.setDiaryValue} >เพิ่มไดอารี่</Button>
-                                    <Button onClick={this.goBack} >ย้อนกลับ</Button>
+                                <Button sx={{
+                                height: 50,
+                                 marginTop: 1,
+                                 marginRight: 1,
+                                bgcolor: 'primary.dark',
+                                '&:hover': {
+                                backgroundColor: 'primary.main',
+                                opacity: [0.9, 0.8, 0.7],
+                                 },
+                                color: '#ffffff',
+                                }} 
+                        startIcon={<CheckIcon />}
+                        onClick={this.setDiaryValue}>
+                            เพิ่มไดอารี่
+                        </Button>
+                        <Button sx={{
+                            height: 50,
+                            marginTop: 1,
+                            bgcolor: 'primary.dark',
+                            '&:hover': {
+                                backgroundColor: 'primary.main',
+                                opacity: [0.9, 0.8, 0.7],
+                            },
+                            color: '#ffffff',
+                        }} 
+                        startIcon={<CloseIcon />}
+                        onClick={this.goBack}>
+                            ย้อนกลับ
+                        </Button>
+                                    
                                 </Form.Item>
                             </Form>
 

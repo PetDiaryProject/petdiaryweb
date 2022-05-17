@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import axios from "axios";
-import { Grid, Container } from '@mui/material';
-import { Button, Row, Col } from 'antd'
+import { Button, Grid, Container } from '@mui/material';
+import {  Row, Col } from 'antd'
 import SelectBoard from "./selectBoard.js";
 import 'antd/dist/antd.css';
+import SubjectIcon from '@mui/icons-material/Subject';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 class listBoard extends Component {
 
     state = {
@@ -55,7 +57,7 @@ class listBoard extends Component {
         return (
             <>
                 <div style={{
-                    backgroundColor: '#cfe8fc',
+                    backgroundImage:`url(/image/system/Grass2.png)`,
                     height: "100vh",
                     "background-repeat": "no-repeat",
                     "background-attachment": "fixed",
@@ -64,6 +66,7 @@ class listBoard extends Component {
                     <Row justify='center'>
                         <Col span={16}>
                             <p><h1>บอร์ดของฉัน</h1></p>
+                            
                             {
                                 this.state.page
                                 &&
@@ -74,14 +77,21 @@ class listBoard extends Component {
                                             return (
                                                 < Grid item >
                                                     <Button sx={{
-                                                        width: '100%',
-                                                        bgcolor: '#66ffcc',
-                                                        justifyContent: 'flex-start'
+                                                        height: 50,
+                                                        width: "100%",
+                                                        bgcolor: 'green',
+                                                        opacity: "60%",
+                                                        '&:hover': {
+                                                        backgroundColor: 'primary.main',
+                                                        
+                                                        },
+                                                        marginBottom: 1,
+                                                        color: '#ffffff',
                                                     }}
                                                         value={k}
                                                         onClick={() => this.setBoardValue(k)}
                                                     >
-                                                        <p>{e.Title + e.Comments[0].AddDate}</p>
+                                                        <p>{e.Title +" "+ e.Comments[0].AddDate}</p>
                                                     </Button>
                                                 </Grid>
                                             )

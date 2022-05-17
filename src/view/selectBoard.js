@@ -1,8 +1,17 @@
 import React, { Component } from 'react';
-import { Paper, Container, Grid } from '@mui/material';
+import { Paper, Container, Button, Grid, Stack } from '@mui/material';
 import axios from "axios";
-import { Typography, Input, Button, message, Switch } from 'antd';
+import { Typography, Input, message, Switch } from 'antd';
 import 'antd/dist/antd.css';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Divider from '@mui/material/Divider';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
+import BackspaceIcon from '@mui/icons-material/Backspace';
+import AddCommentIcon from '@mui/icons-material/AddComment';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 
 class selectBoard extends Component {
 
@@ -18,20 +27,39 @@ class selectBoard extends Component {
             "Text": "",
             "IsOwner": false,
         },
-        board : null
+        board: null
 
     }
 
 
     componentDidMount() {
         this.getComment()
-        this.setState({board : this.props.board})
+        this.setState({ board: this.props.board })
     }
 
     getComment() {
         var a = []
         var url = "https://petdiaryintern.herokuapp.com/api/comment/byBoard/"
         var data = this.props.board.Boardid
+        axios.get(url + data)
+            .then(response => {
+                var item = response.data
+                item.map(e => {
+                    a.push(e)
+                })
+            })
+            .then(e => {
+                this.setState({ comment: a })
+            })
+            .then(e => {
+                this.getOwnerid()
+            })
+    }
+
+    getComment1(e) {
+        var a = []
+        var url = "https://petdiaryintern.herokuapp.com/api/comment/byBoard/"
+        var data = e
         axios.get(url + data)
             .then(response => {
                 var item = response.data
@@ -68,11 +96,10 @@ class selectBoard extends Component {
     onChangeIsShow = (e) => {
         var data = this.state.board
         data.IsShow = !(data.IsShow)
-        this.setState({board : data})
+        this.setState({ board: data })
         var url = "https://petdiaryintern.herokuapp.com/api/board/update"
-        axios.put(url , data)
+        axios.put(url, data)
             .then(response => {
-                console.log(response)
             })
     }
 
@@ -112,7 +139,7 @@ class selectBoard extends Component {
         axios.post("http://localhost:8001/upload", formData);
     }
 
-    
+
 
     creteNewComment = () => {
         var url = "https://petdiaryintern.herokuapp.com/api/comment/create"
@@ -120,12 +147,10 @@ class selectBoard extends Component {
         axios.post(url, data)
             .then(response => {
                 var item = response
-                console.log(item)
             })
             .then(() => {
-                setTimeout(() => {
-                    message.success('เพิ่มคอมเมนเสร็จสิ้น', 2)
-                }, 1000);
+                message.success('เพิ่มคอมเมนต์เสร็จสิ้น', 2)
+                setTimeout(this.getComment1(this.props.board.Boardid), 1000);
             })
 
     }
@@ -136,10 +161,49 @@ class selectBoard extends Component {
         axios.delete(url + "/" + data)
             .then(response => {
                 var item = response
-                console.log(item)
+                message.error('ลบคอมเมนต์เสร็จสิ้น', 2)
+                setTimeout(this.getComment1(this.props.board.Boardid), 1000);
             })
 
     }
+
+    onChangeTitle = (e) => {
+        var a = this.state.board
+        a.Title = e.target.value
+        this.setState({ board: a })
+    }
+
+    onChangeDetail = (e) => {
+        var a = this.state.board
+        a.Comments.map(comment => {
+            if (comment.IsOwner == true)
+                comment.Text = e.target.value
+        })
+        this.setState({ board: a })
+    }
+
+    updateBoard = () => {
+        var data = this.state.board
+        var url = "https://petdiaryintern.herokuapp.com/api/board/update"
+        axios.put(url, data)
+            .then(response => {
+                var c = null
+                this.state.board.Comments.map(comment => {
+                    if (comment.IsOwner == true)
+                        c = comment
+                })
+                console.log(c)
+                var url = "https://petdiaryintern.herokuapp.com/api/Comment/update"
+                axios.put(url, c)
+                    .then(response => {
+                        message.success('แก้ไขคอมเมนต์เสร็จสิ้น', 2)
+                        setTimeout(this.getComment1(this.props.board.Boardid), 1000);
+                        this.changeUpdateTrue()
+
+                    })
+            })
+    }
+
 
 
     render() {
@@ -151,45 +215,85 @@ class selectBoard extends Component {
             <>
                 <Container key={this.props.board.Boardid}>
                     <Grid Container>
-                        <Button sx={{ bgcolor: '#66ffcc' }} onClick={this.goBack}>
-                            ย้อนกลับ
-                        </Button>
-                        {
-                            this.state.ownerid == this.state.userid
-                            &&
-                            <div>
-                                <Button sx={{ bgcolor: '#66ffcc' }} onClick={this.changeUpdate}>
-                                    แก้ไข
-                                </Button>
-                                <Typography>
-                                    แสดงเป็นสาธารณะหรือไม่:
-                                </Typography>
-                                {
-                                    this.state.board.IsShow 
-                                    &&
-                                    <Switch defaultChecked onChange={(e) => this.onChangeIsShow()} />
-                                }
-                                {
-                                    !this.state.board.IsShow
-                                    &&
-                                    <Switch  onChange={(e) => this.onChangeIsShow()} />
-                                }
-                                
-                            </div>
+                        <Stack direction="row" spacing={2}
+                            justifyContent="flex-start"
+                        >
+                            <Button sx={{
+                                height: 50,
+                                marginTop: 1,
+                                marginBottom: 1,
+                                bgcolor: 'primary.dark',
+                                '&:hover': {
+                                    backgroundColor: 'primary.main',
+                                    opacity: [0.9, 0.8, 0.7],
+                                },
+                                color: '#ffffff',
+                            }}
+                                startIcon={<ArrowBackIosIcon />}
+                                onClick={this.goBack}>
+                                ย้อนกลับ
+                            </Button>
+                            {
+                                this.state.ownerid == this.state.userid
+                                &&
+                                <div>
+                                    <Stack direction="row" spacing={2}
+                                        alignItems="center">
+                                        <Button sx={{
+                                            height: 50,
+                                            marginTop: 1,
+                                            marginRight: 1,
+                                            marginBottom: 1,
+                                            bgcolor: 'primary.dark',
+                                            '&:hover': {
+                                                backgroundColor: 'primary.main',
+                                                opacity: [0.9, 0.8, 0.7],
+                                            },
+                                            color: '#ffffff',
+                                        }}
+                                            startIcon={<BorderColorIcon />}
+                                            onClick={this.changeUpdate}>
+                                            แก้ไข
+                                        </Button>
+                                        {/* <div> */}
+                                        {/* <Stack direction="row" spacing={2} */}
 
-                        }
+                                        <Typography>
+                                            แสดงเป็นสาธารณะหรือไม่:
+                                        </Typography>
+                                        {
+                                            this.state.board.IsShow
+                                            &&
+                                            <Switch defaultChecked onChange={(e) => this.onChangeIsShow()} />
+                                        }
+                                        {
+                                            !this.state.board.IsShow
+                                            &&
+                                            <Switch onChange={(e) => this.onChangeIsShow()} />
+                                        }
+                                        {/* </div> */}
+                                    </Stack>
+                                </div>
 
+                            }
+                        </Stack>
                     </Grid>
                     {
                         this.state.update
                         &&
                         <Grid >
                             <Grid item>
-                                <Paper sx={{ width: '100%', bgcolor: '#ffffff' }}>
-                                    <Typography>
-                                        {this.props.board.Title}
-                                    </Typography>
-                                </Paper>
+                                <Card sx={{
+                                    width: '100%',
+                                    marginTop: 1,
+                                }}
+                                >
+                                    <CardContent>
+                                        <Typography>
+                                            ชื่อบอร์ด :  {this.props.board.Title}
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
                             </Grid>
                             <Grid item>
                                 {
@@ -197,26 +301,32 @@ class selectBoard extends Component {
                                         var a = data
                                         return (
                                             <div>
-                                                <Paper sx={{
+                                                <Card sx={{
                                                     width: "100%",
-                                                    mt: '2',
-                                                    mb: '2'
+                                                    marginBottom: 1,
                                                 }}
                                                 >
-                                                    <Typography>
-                                                        {data.Text}
-                                                    </Typography>
-                                                    <p> {data.AddDate + "\n" + data.User.Alias}</p>
-                                                    {
-                                                        !data.IsOwner
-                                                        &&
-                                                        data.Userid == this.state.userid
-                                                        &&
-                                                        <Button onClick={() => this.deleteComment(a)}>
-                                                            ลบคอมเมน
-                                                        </Button>
-                                                    }
-                                                </Paper>
+                                                    <CardContent>
+                                                        <Typography>
+                                                            {data.Text}
+                                                        </Typography>
+                                                        <Divider />
+                                                        <p> วันที่ : {data.AddDate + "\nผู้ใช้ : " + data.User.Alias}</p>
+                                                        {
+                                                            !data.IsOwner
+                                                            &&
+                                                            data.Userid == this.state.userid
+                                                            &&
+                                                            <Button variant="outlined"
+
+                                                                startIcon={<BackspaceIcon />}
+                                                                onClick={() => this.deleteComment(a)}>
+                                                                ลบคอมเมนต์
+                                                            </Button>
+
+                                                        }
+                                                    </CardContent>
+                                                </Card>
 
                                             </div>
 
@@ -233,14 +343,47 @@ class selectBoard extends Component {
                             <Typography>
                                 ชื่อบอร์ด
                             </Typography>
-                            <Input allowClear></Input>
+                            <Input allowClear defaultValue={this.state.board.Title} onChange={this.onChangeTitle}></Input>
                             <Typography>
                                 ข้อความ
                             </Typography>
-                            <TextArea rows={10} allowClear ></TextArea>
+                            <TextArea rows={10} allowClear defaultValue={this.state.board.Comments.map(e => {
+                                if (e.IsOwner == true) {
+                                    return (e.Text)
+                                }
+                            })} onChange={this.onChangeDetail}></TextArea>
                             <br></br>
-                            <Button onClick={this.changeUpdateTrue} >ยกเลิก</Button>
-                            <Button >แก้ไขบอร์ด</Button>
+                            <Button sx={{
+                                height: 50,
+                                marginTop: 1,
+                                marginRight: 1,
+                                bgcolor: 'primary.dark',
+                                '&:hover': {
+                                    backgroundColor: 'primary.main',
+                                    opacity: [0.9, 0.8, 0.7],
+                                },
+                                color: '#ffffff',
+                            }}
+                                startIcon={<CheckIcon />}
+                                onClick={this.updateBoard}>
+                                    แก้ไขบอร์ด
+                            </Button>
+                            <Button sx={{
+                                height: 50,
+                                marginTop: 1,
+                                marginRight: 1,
+                                bgcolor: 'primary.dark',
+                                '&:hover': {
+                                    backgroundColor: 'primary.main',
+                                    opacity: [0.9, 0.8, 0.7],
+                                },
+                                color: '#ffffff',
+                            }}
+                                startIcon={<CloseIcon />}
+                                onClick={this.changeUpdateTrue} >
+                                    ยกเลิก
+                            </Button>
+                            
                         </div>
                     }
                     {
@@ -252,7 +395,12 @@ class selectBoard extends Component {
                             </Typography>
                             <TextArea defaultValue={this.state.comment.Text} rows={5} allowClear onChange={(e) => this.onChangeText(e)}></TextArea>
                             <br></br>
-                            <Button onClick={this.creteNewComment}>เพิ่มคอมเมน</Button>
+                            <Button variant="contained"
+                                sx={{ marginTop: 1, }}
+
+                                startIcon={<AddCommentIcon />}
+                                onClick={() => this.creteNewComment()}>เพิ่มคอมเมนต์</Button>
+
                         </div>
                     }
                 </Container>
